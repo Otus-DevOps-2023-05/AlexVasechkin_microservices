@@ -1,13 +1,15 @@
 FROM python:3.6.0-alpine
 
 WORKDIR /app
-ADD . /app
+COPY VERSION *.py requirements.txt VERSION ./
 
-RUN apk --no-cache --update add build-base && \
-    pip install -r /app/requirements.txt && \
-    apk del build-base
+RUN apk --no-cache --update add build-base \
+    && pip install --upgrade pip \
+    && pip install -r /app/requirements.txt
+RUN apk --no-cache --update add bash vim iputils \
+    && apk del build-base
 
 ENV POST_DATABASE_HOST post_db
 ENV POST_DATABASE posts
 
-ENTRYPOINT ["python3", "post_app.py"]
+CMD ["python3", "post_app.py"]
