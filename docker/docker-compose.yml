@@ -75,6 +75,15 @@ services:
     networks:
       - back_net
 
+  blackbox-exporter:
+    container_name: blackbox-exporter
+    image: ${USERNAME}/blackbox-exporter
+    ports:
+      - '9115:9115/tcp'
+    networks:
+      - back_net
+      - front_net
+
 volumes:
   post_db:
   prometheus_data:
