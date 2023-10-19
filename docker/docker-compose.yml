@@ -63,6 +63,18 @@ services:
       - back_net
       - front_net
 
+  mongodb-exporter:
+    image: percona/mongodb_exporter:0.30.0
+    depends_on:
+      - prometheus
+    command:
+      - '--mongodb.uri=mongodb://post_db:27017'
+      - '--compatible-mode'
+      - '--mongodb.direct-connect=true'
+      - '--log.level=debug'
+    networks:
+      - back_net
+
 volumes:
   post_db:
   prometheus_data:
