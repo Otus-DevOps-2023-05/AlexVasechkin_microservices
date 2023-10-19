@@ -1,6 +1,0 @@
-administrator@MacBook-Pro-Aleksandr-2 microservices % docker images
-REPOSITORY                               TAG                IMAGE ID       CREATED          SIZE
-alex-vasechkin/ubuntu-tmp-file           latest             591461e9c1d0   11 seconds ago   56.7MB
-
-docker inspect <u_container_id> - вывод информации о контейнере
-docker inspect <u_image_id> - вывод информации об образе
