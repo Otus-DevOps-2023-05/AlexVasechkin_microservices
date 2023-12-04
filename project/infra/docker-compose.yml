@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  redis:
+    container_name: odp_redis
+    build:
+      context: ./redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mailer-network
+
+  rabbitmq:
+    container_name: odp_rabbitmq
+    build:
+      context: ./rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mailer-network
+
+  prometheus:
+    container_name: odp_prom
+    build:
+      context: ./prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+    networks:
+      - mailer-network
+
+  node-exporter:
+    container_name: odp_node-exporter
+    image: prom/node-exporter:v1.3.1
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude'
+      - '^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)'
+    networks:
+      - mailer-network
+
+  grafana:
+    image: grafana/grafana:8.5.3-ubuntu
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - mailer-network
+
+volumes:
+  prometheus_data:
+  grafana-data:
+
+networks:
+  mailer-network:
+    name: mailer-network
+    external: true
