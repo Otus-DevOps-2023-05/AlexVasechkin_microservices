@@ -1,0 +1,8 @@
+all:
+  hosts:
+    php-web-app:
+  children:
+    php-web-app:
+      hosts:
+        php-web-app:
+          ansible_host: 127.0.0.1
