@@ -1,0 +1,29 @@
+---
+# tasks file for docker
+- name: Start docker installation
+  debug:
+    msg: "Start"
+  notify: apt update
+
+- name: Install supporting packages
+  apt: "name={{ item }} state=present"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Add docker repo keys
+  shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -"
+
+- name: Add docker repo
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+  notify: apt update
+
+- name: Install docker
+  apt: "name=docker-ce state=present"
+
+- name: Add current user to docker group
+  shell: usermod -aG docker $(whoami)
