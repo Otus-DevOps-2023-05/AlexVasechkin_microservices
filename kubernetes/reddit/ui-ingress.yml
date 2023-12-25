@@ -5,9 +5,15 @@ metadata:
   name: ui-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.allow-http: "false" # Отключаем проброс HTTP
 spec:
+  tls:
+  - hosts:
+      - kubernetes-3.it-4-b.ru
+    secretName: ui-ingress # Подключаем наш сертификат
   rules:
-  - http:
+  - host: kubernetes-3.it-4-b.ru
+    http:
       paths:
       - path: /
         pathType: Prefix
